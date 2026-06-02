@@ -10,7 +10,6 @@ API_KEY = "COLOCAR_SUA_KEY"
 HISTORICO_FILE = "historico.json"
 
 def carregar_historico():
-    """Carrega as cidades do arquivo JSON se ele existir."""
     if os.path.exists(HISTORICO_FILE):
         try:
             with open(HISTORICO_FILE, "r", encoding="utf-8") as f:
