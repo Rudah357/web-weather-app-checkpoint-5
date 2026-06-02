@@ -5,7 +5,7 @@ import os
 from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__)
-API_KEY = "a0f8d0ca201f2cc723126b1ba41cb4a8"  # Sua chave real configurada
+API_KEY = "COLOCAR_SUA_KEY"
 
 HISTORICO_FILE = "historico.json"
 
@@ -20,24 +20,20 @@ def carregar_historico():
     return []
 
 def salvar_historico(cidade):
-    """Adiciona a cidade ao histórico, mantendo apenas as 3 últimas sem duplicar."""
     historico = carregar_historico()
     
-    # Remove se a cidade já existia para colocá-la no topo (mais recente)
     if cidade in historico:
         historico.remove(cidade)
         
-    historico.insert(0, city_name := cidade)  # Adiciona no início
-    historico = historico[:3]                 # Mantém apenas os 3 primeiros
+    historico.insert(0, city_name := cidade)
+    historico = historico[:3]
     
     with open(HISTORICO_FILE, "w", encoding="utf-8") as f:
         json.dump(historico, f, ensure_ascii=False, indent=4)
 
 def formatar_timestamp(timestamp, timezone_offset):
-    """Desafio 2 CORRIGIDO: Converte o timestamp Unix considerando o fuso horário correto da cidade."""
-    # Primeiro lemos o timestamp travado no fuso UTC padrão
+
     hora_utc = datetime.fromtimestamp(timestamp, tz=timezone.utc)
-    # Depois aplicamos o deslocamento em segundos fornecido pela API para a cidade
     hora_local = hora_utc + timedelta(seconds=timezone_offset)
     return hora_local.strftime("%H:%M")
 
@@ -51,7 +47,7 @@ def index():
     if request.method == "POST":
         cidade = request.form.get("cidade")
         if cidade:
-            # 1ª etapa: Geocoding para pegar coordenadas e Estado
+
             geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={cidade}&limit=1&appid={API_KEY}"
             try:
                 geo_resposta = requests.get(geo_url)
@@ -61,17 +57,14 @@ def index():
                     lat = geo_dados['lat']
                     lon = geo_dados['lon']
                     
-                    # 2ª etapa: Busca o clima atual
                     url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=metric&lang=pt_br"
                     resposta = requests.get(url)
                     
                     if resposta.status_code == 200:
                         clima = resposta.json()
                         
-                        # Salva no histórico após o sucesso da busca (Desafio 4)
                         salvar_historico(clima['name'])
                         
-                        # Desafio 2: Processando o Fuso Horário, Nascer e Pôr do Sol
                         offset = clima.get('timezone', 0)
                         sunrise_unix = clima['sys']['sunrise']
                         sunset_unix = clima['sys']['sunset']
@@ -86,7 +79,6 @@ def index():
             except requests.exceptions.RequestException:
                 erro = "Não foi possível conectar ao servidor de clima."
 
-    # Carrega o histórico para renderizar os botões na tela (Desafio 4)
     historico = carregar_historico()
     return render_template("index.html", clima=clima, erro=erro, estado=estado, extras=dados_extras, historico=historico)
 

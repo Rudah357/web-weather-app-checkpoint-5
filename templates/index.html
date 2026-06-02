@@ -8,7 +8,6 @@
     <style>
         body { background-color: #0b0f19; color: #f8fafc; }
         
-        /* Estrutura principal do Card */
         .weather-card { 
             border: 1px solid #1f2937; 
             border-radius: 1rem; 
@@ -19,26 +18,23 @@
             transition: background-color 0.5s ease;
         }
 
-        /* 1. PARTE DE CIMA (Topo sólido para busca) */
         .card-header-zone {
             background-color: var(--blend-color);
             padding: 2rem 2rem 1rem 2rem;
             transition: background-color 0.5s ease;
         }
 
-        /* 2. PARTE DO MEIO (Área da Imagem Expandida) */
         .card-middle-image {
-            height: 280px; /* Aumentado de 180px para 280px para dar mais espaço */
+            height: 280px;
             background-size: cover;
             background-position: center;
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Empurra os elementos internos para as bordas superior e inferior */
+            justify-content: space-between;
             padding: 1.2rem 1.5rem;
         }
 
-        /* Degradês para suavizar as junções da imagem */
         .card-middle-image::before {
             content: '';
             position: absolute;
@@ -54,14 +50,13 @@
             z-index: 1;
         }
 
-        /* Garante que os textos e dados fiquem acima dos degradês de fundo */
+
         .middle-top-content, .middle-center-content, .middle-bottom-content {
             position: relative;
             z-index: 2;
             text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.85);
         }
 
-        /* Centralização absoluta do bloco de Temperatura no meio exato da imagem */
         .middle-center-content {
             position: absolute;
             top: 50%;
@@ -71,7 +66,6 @@
             width: 100%;
         }
 
-        /* Pequenas caixas translúcidas para Umidade e Vento na borda interna da imagem */
         .inline-info-pill {
             background-color: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(4px);
